@@ -55,8 +55,8 @@ const SubscriptionForm = () => {
     };
 
     const inputStyle = {
-        background: 'var(--bg-primary)', color: 'var(--text-primary)',
-        border: '1px solid var(--border)',
+        background: 'var(--bg-elevated)', color: 'var(--text-primary)',
+        border: '1px solid var(--border-light)',
     };
 
     return (

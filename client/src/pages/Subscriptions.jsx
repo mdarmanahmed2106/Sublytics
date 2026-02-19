@@ -75,12 +75,12 @@ const Subscriptions = () => {
                         <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search..."
                             className="w-full pl-9 pr-3 py-2.5 rounded-xl text-sm"
-                            style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} />
+                            style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }} />
                     </div>
 
                     <select value={category} onChange={(e) => setCategory(e.target.value)}
                         className="px-3 py-2.5 rounded-xl text-sm cursor-pointer"
-                        style={{ background: 'var(--bg-primary)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+                        style={{ background: 'var(--bg-elevated)', color: 'var(--text-secondary)', border: '1px solid var(--border-light)' }}>
                         <option value="">All Categories</option>
                         {['Entertainment', 'Productivity', 'Fitness', 'Finance', 'Other'].map((c) => (
                             <option key={c} value={c}>{c}</option>
@@ -89,7 +89,7 @@ const Subscriptions = () => {
 
                     <select value={status} onChange={(e) => setStatus(e.target.value)}
                         className="px-3 py-2.5 rounded-xl text-sm cursor-pointer"
-                        style={{ background: 'var(--bg-primary)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+                        style={{ background: 'var(--bg-elevated)', color: 'var(--text-secondary)', border: '1px solid var(--border-light)' }}>
                         <option value="">All Statuses</option>
                         <option value="active">Active</option>
                         <option value="paused">Paused</option>
@@ -99,7 +99,7 @@ const Subscriptions = () => {
                     <select value={`${sort}.${order}`}
                         onChange={(e) => { const [s, o] = e.target.value.split('.'); setSort(s); setOrder(o); }}
                         className="px-3 py-2.5 rounded-xl text-sm cursor-pointer"
-                        style={{ background: 'var(--bg-primary)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+                        style={{ background: 'var(--bg-elevated)', color: 'var(--text-secondary)', border: '1px solid var(--border-light)' }}>
                         <option value="createdAt.desc">Newest</option>
                         <option value="createdAt.asc">Oldest</option>
                         <option value="cost.desc">Cost ↓</option>
@@ -193,7 +193,7 @@ const Subscriptions = () => {
                         <div className="flex gap-3">
                             <button onClick={() => setDeleteId(null)}
                                 className="flex-1 py-2.5 rounded-xl text-sm font-medium cursor-pointer"
-                                style={{ background: 'var(--bg-primary)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+                                style={{ background: 'var(--bg-elevated)', color: 'var(--text-secondary)', border: '1px solid var(--border-light)' }}>
                                 Cancel
                             </button>
                             <button onClick={handleDelete}

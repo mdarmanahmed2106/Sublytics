@@ -63,7 +63,7 @@ const Register = () => {
                                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                                     placeholder="John Doe"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
-                                    style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+                                    style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
                                     onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
@@ -77,7 +77,7 @@ const Register = () => {
                                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                                     placeholder="you@example.com"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
-                                    style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+                                    style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
                                     onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
@@ -91,7 +91,7 @@ const Register = () => {
                                     onChange={(e) => setForm({ ...form, password: e.target.value })}
                                     placeholder="At least 6 characters"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
-                                    style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+                                    style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
                                     onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
