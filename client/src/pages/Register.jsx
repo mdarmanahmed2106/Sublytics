@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { registerUser } from '../api/api';
 import { CreditCard, Mail, Lock, User, ArrowRight } from 'lucide-react';
 
@@ -29,16 +29,16 @@ const Register = () => {
     return (
         <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-primary)' }}>
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -left-40 w-80 h-80 rounded-full opacity-20 blur-3xl"
-                    style={{ background: 'var(--accent-blue)' }} />
+                <div className="absolute -top-40 -left-40 w-80 h-80 rounded-full opacity-15 blur-3xl"
+                    style={{ background: 'var(--accent-orange)' }} />
                 <div className="absolute -bottom-40 -right-40 w-80 h-80 rounded-full opacity-10 blur-3xl"
-                    style={{ background: 'var(--accent-purple)' }} />
+                    style={{ background: 'var(--accent-coral)' }} />
             </div>
 
             <div className="w-full max-w-md animate-fade-in-up relative z-10">
                 <div className="flex flex-col items-center mb-8">
                     <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 animate-pulse-glow"
-                        style={{ background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-pink))' }}>
+                        style={{ background: 'linear-gradient(135deg, var(--accent-orange), var(--accent-coral))' }}>
                         <CreditCard size={28} color="white" />
                     </div>
                     <h1 className="text-3xl font-bold gradient-text">SubsTracker</h1>
@@ -64,7 +64,7 @@ const Register = () => {
                                     placeholder="John Doe"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
                                     style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
-                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-purple)'}
+                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
                         </div>
@@ -78,7 +78,7 @@ const Register = () => {
                                     placeholder="you@example.com"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
                                     style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
-                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-purple)'}
+                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
                         </div>
@@ -92,7 +92,7 @@ const Register = () => {
                                     placeholder="At least 6 characters"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
                                     style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
-                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-purple)'}
+                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
                         </div>
@@ -100,8 +100,9 @@ const Register = () => {
                         <button type="submit" disabled={loading}
                             className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer mt-2"
                             style={{
-                                background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-pink))',
+                                background: 'linear-gradient(135deg, var(--accent-orange), var(--accent-coral))',
                                 color: 'white', border: 'none', opacity: loading ? 0.7 : 1,
+                                boxShadow: '0 4px 15px rgba(255,107,53,0.25)',
                             }}>
                             {loading ? 'Creating account...' : <><span>Create Account</span><ArrowRight size={16} /></>}
                         </button>
@@ -109,7 +110,7 @@ const Register = () => {
 
                     <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
                         Already have an account?{' '}
-                        <Link to="/login" className="font-medium" style={{ color: 'var(--accent-purple-light)' }}>Sign in</Link>
+                        <Link to="/login" className="font-medium" style={{ color: 'var(--accent-orange)' }}>Sign in</Link>
                     </p>
                 </div>
             </div>

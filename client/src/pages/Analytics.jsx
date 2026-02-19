@@ -6,7 +6,7 @@ import {
     LineChart, Line, Area, AreaChart,
 } from 'recharts';
 
-const COLORS = ['#7C3AED', '#3B82F6', '#EC4899', '#10B981', '#F59E0B', '#EF4444'];
+const COLORS = ['#FF6B35', '#7C3AED', '#3B82F6', '#10B981', '#F59E0B', '#EC4899'];
 
 const Analytics = () => {
     const [summary, setSummary] = useState(null);
@@ -37,7 +37,7 @@ const Analytics = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--accent-orange)', borderTopColor: 'transparent' }} />
             </div>
         );
     }
@@ -139,15 +139,15 @@ const Analytics = () => {
                             <AreaChart data={trend}>
                                 <defs>
                                     <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#7C3AED" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#FF6B35" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#FF6B35" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                                 <XAxis dataKey="month" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
                                 <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
                                 <Tooltip {...tooltipStyle} formatter={(val) => [`₹${val}`, 'Total']} />
-                                <Area type="monotone" dataKey="total" stroke="#7C3AED" strokeWidth={2}
+                                <Area type="monotone" dataKey="total" stroke="#FF6B35" strokeWidth={2}
                                     fill="url(#trendGrad)" />
                             </AreaChart>
                         </ResponsiveContainer>

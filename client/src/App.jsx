@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthProvider';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
@@ -10,17 +10,26 @@ import SubscriptionForm from './pages/SubscriptionForm';
 import SubscriptionDetail from './pages/SubscriptionDetail';
 import Analytics from './pages/Analytics';
 import ActivityFeed from './pages/ActivityFeed';
+import Profile from './pages/Profile';
+import { useEffect } from 'react';
 
 const AppLayout = () => (
   <>
+    <div className="app-bg-glow" />
     <Navbar />
-    <main className="lg:ml-64 pt-20 lg:pt-6 pb-20 lg:pb-6 px-4 lg:px-8 min-h-screen">
+    <main className="lg:ml-64 pt-20 lg:pt-6 pb-20 lg:pb-6 px-4 lg:px-8 min-h-screen relative z-10">
       <Outlet />
     </main>
   </>
 );
 
 function App() {
+  useEffect(() => {
+    const saved = localStorage.getItem('theme');
+    const theme = saved === 'light' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = theme;
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -38,6 +47,7 @@ function App() {
             <Route path="/subscriptions/:id/edit" element={<SubscriptionForm />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/activity" element={<ActivityFeed />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
 
           {/* Redirect root */}

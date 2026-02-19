@@ -71,7 +71,7 @@ const ActivityFeed = () => {
 
             {loading ? (
                 <div className="flex justify-center py-12">
-                    <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--accent-orange)', borderTopColor: 'transparent' }} />
                 </div>
             ) : activities.length === 0 ? (
                 <div className="glass-card p-12 text-center">

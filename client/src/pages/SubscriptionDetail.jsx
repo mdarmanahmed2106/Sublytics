@@ -24,6 +24,7 @@ const SubscriptionDetail = () => {
                 const filtered = actRes.data.data.filter((a) => a.entityId?._id === id || a.entityId === id);
                 setActivities(filtered);
             } catch (err) {
+                console.error(err);
                 navigate('/subscriptions');
             } finally {
                 setLoading(false);
@@ -35,7 +36,7 @@ const SubscriptionDetail = () => {
     if (loading || !sub) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--accent-orange)', borderTopColor: 'transparent' }} />
             </div>
         );
     }
@@ -60,7 +61,7 @@ const SubscriptionDetail = () => {
                     </div>
                     <Link to={`/subscriptions/${id}/edit`}
                         className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
-                        style={{ background: 'rgba(124,58,237,0.15)', color: 'var(--accent-purple-light)' }}>
+                        style={{ background: 'rgba(255,107,53,0.12)', color: 'var(--accent-orange)' }}>
                         <Edit3 size={14} /> Edit
                     </Link>
                 </div>

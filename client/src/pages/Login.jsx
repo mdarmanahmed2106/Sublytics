@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { loginUser } from '../api/api';
 import { CreditCard, Mail, Lock, ArrowRight } from 'lucide-react';
 
@@ -30,17 +30,17 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-primary)' }}>
             {/* Background gradient blobs */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full opacity-20 blur-3xl"
-                    style={{ background: 'var(--accent-purple)' }} />
+                <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full opacity-15 blur-3xl"
+                    style={{ background: 'var(--accent-orange)' }} />
                 <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full opacity-10 blur-3xl"
-                    style={{ background: 'var(--accent-pink)' }} />
+                    style={{ background: 'var(--accent-coral)' }} />
             </div>
 
             <div className="w-full max-w-md animate-fade-in-up relative z-10">
                 {/* Logo */}
                 <div className="flex flex-col items-center mb-8">
                     <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 animate-pulse-glow"
-                        style={{ background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-pink))' }}>
+                        style={{ background: 'linear-gradient(135deg, var(--accent-orange), var(--accent-coral))' }}>
                         <CreditCard size={28} color="white" />
                     </div>
                     <h1 className="text-3xl font-bold gradient-text">SubsTracker</h1>
@@ -69,7 +69,7 @@ const Login = () => {
                                     placeholder="you@example.com"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
                                     style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
-                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-purple)'}
+                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
                         </div>
@@ -83,7 +83,7 @@ const Login = () => {
                                     placeholder="Enter your password"
                                     className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
                                     style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
-                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-purple)'}
+                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
                                     onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
                             </div>
                         </div>
@@ -91,8 +91,9 @@ const Login = () => {
                         <button type="submit" disabled={loading}
                             className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer mt-2"
                             style={{
-                                background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-pink))',
+                                background: 'linear-gradient(135deg, var(--accent-orange), var(--accent-coral))',
                                 color: 'white', border: 'none', opacity: loading ? 0.7 : 1,
+                                boxShadow: '0 4px 15px rgba(255,107,53,0.25)',
                             }}>
                             {loading ? 'Signing in...' : <><span>Sign In</span><ArrowRight size={16} /></>}
                         </button>
@@ -100,7 +101,7 @@ const Login = () => {
 
                     <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
                         Don't have an account?{' '}
-                        <Link to="/register" className="font-medium" style={{ color: 'var(--accent-purple-light)' }}>Create one</Link>
+                        <Link to="/register" className="font-medium" style={{ color: 'var(--accent-orange)' }}>Create one</Link>
                     </p>
                 </div>
             </div>

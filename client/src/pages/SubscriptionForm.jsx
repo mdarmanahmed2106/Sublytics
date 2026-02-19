@@ -26,7 +26,10 @@ const SubscriptionForm = () => {
                         billingCycle: sub.billingCycle, status: sub.status,
                         startDate: sub.startDate?.split('T')[0] || '',
                     });
-                } catch (err) { navigate('/subscriptions'); }
+                } catch (err) {
+                    console.error(err);
+                    navigate('/subscriptions');
+                }
             };
             load();
         }
@@ -158,10 +161,9 @@ const SubscriptionForm = () => {
                     </div>
 
                     <button type="submit" disabled={loading}
-                        className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer mt-2"
+                        className="gradient-btn w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer mt-2"
                         style={{
-                            background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-pink))',
-                            color: 'white', border: 'none', opacity: loading ? 0.7 : 1,
+                            opacity: loading ? 0.7 : 1,
                         }}>
                         <Save size={16} /> {loading ? 'Saving...' : isEdit ? 'Update Subscription' : 'Add Subscription'}
                     </button>
