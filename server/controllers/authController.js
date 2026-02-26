@@ -1,21 +1,44 @@
 const jwt = require('jsonwebtoken');
-const { validationResult, body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const AppError = require('../utils/AppError');
+const asyncHandler = require('../utils/asyncHandler');
+const { sendSuccess } = require('../utils/response');
 
-// Generate JWT
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE || '7d',
+// ── Token Helpers ──
+
+const generateAccessToken = (id) =>
+    jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE || '15m',
+    });
+
+const generateRefreshToken = (id) =>
+    jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, {
+        expiresIn: process.env.JWT_REFRESH_EXPIRE || '30d',
+    });
+
+const setRefreshCookie = (res, token) => {
+    res.cookie('refreshToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        path: '/',
     });
 };
 
-// Validation rules
+// ── Validation Rules ──
+
 const registerValidation = [
     body('name').trim().notEmpty().withMessage('Name is required'),
     body('email').isEmail().withMessage('Please enter a valid email'),
     body('password')
-        .isLength({ min: 6 })
-        .withMessage('Password must be at least 6 characters'),
+        .isLength({ min: 8 })
+        .withMessage('Password must be at least 8 characters')
+        .matches(/[A-Z]/)
+        .withMessage('Password must contain at least one uppercase letter')
+        .matches(/[0-9]/)
+        .withMessage('Password must contain at least one number'),
 ];
 
 const loginValidation = [
@@ -23,96 +46,110 @@ const loginValidation = [
     body('password').notEmpty().withMessage('Password is required'),
 ];
 
+// ── Controllers ──
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
-const register = async (req, res) => {
+const register = asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({
-            success: false,
-            error: {
-                code: 'VALIDATION_ERROR',
-                message: errors.array()[0].msg,
-            },
-        });
+        throw new AppError(errors.array()[0].msg, 400, 'VALIDATION_ERROR');
     }
 
     const { name, email, password } = req.body;
 
-    try {
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                error: {
-                    code: 'EMAIL_EXISTS',
-                    message: 'An account with this email already exists',
-                },
-            });
-        }
-
-        const user = await User.create({ name, email, password });
-
-        res.status(201).json({
-            success: true,
-            data: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                token: generateToken(user._id),
-            },
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: { code: 'SERVER_ERROR', message: 'Server error during registration' },
-        });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        throw new AppError('An account with this email already exists', 400, 'EMAIL_EXISTS');
     }
-};
 
-// @desc    Login user & get token
+    const user = await User.create({ name, email, password });
+
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+    setRefreshCookie(res, refreshToken);
+
+    sendSuccess(res, {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        accessToken,
+    }, 201);
+});
+
+// @desc    Login user & get tokens
 // @route   POST /api/auth/login
-const login = async (req, res) => {
+const login = asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({
-            success: false,
-            error: {
-                code: 'VALIDATION_ERROR',
-                message: errors.array()[0].msg,
-            },
-        });
+        throw new AppError(errors.array()[0].msg, 400, 'VALIDATION_ERROR');
     }
 
     const { email, password } = req.body;
 
-    try {
-        const user = await User.findOne({ email });
-        if (!user || !(await user.matchPassword(password))) {
-            return res.status(401).json({
-                success: false,
-                error: {
-                    code: 'INVALID_CREDENTIALS',
-                    message: 'Invalid email or password',
-                },
-            });
-        }
-
-        res.json({
-            success: true,
-            data: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                token: generateToken(user._id),
-            },
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: { code: 'SERVER_ERROR', message: 'Server error during login' },
-        });
+    const user = await User.findOne({ email });
+    if (!user || !(await user.matchPassword(password))) {
+        throw new AppError('Invalid email or password', 401, 'INVALID_CREDENTIALS');
     }
-};
 
-module.exports = { register, login, registerValidation, loginValidation };
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+    setRefreshCookie(res, refreshToken);
+
+    sendSuccess(res, {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        accessToken,
+    });
+});
+
+// @desc    Refresh access token using refresh cookie
+// @route   POST /api/auth/refresh
+const refreshAccessToken = asyncHandler(async (req, res) => {
+    const token = req.cookies.refreshToken;
+    if (!token) {
+        throw new AppError('No refresh token', 401, 'NO_TOKEN');
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+        throw new AppError('User no longer exists', 401, 'USER_NOT_FOUND');
+    }
+
+    const accessToken = generateAccessToken(user._id);
+    // Rotate refresh token
+    const newRefreshToken = generateRefreshToken(user._id);
+    setRefreshCookie(res, newRefreshToken);
+
+    sendSuccess(res, {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        accessToken,
+    });
+});
+
+// @desc    Logout — clear refresh cookie
+// @route   POST /api/auth/logout
+const logoutUser = asyncHandler(async (req, res) => {
+    res.cookie('refreshToken', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        expires: new Date(0),
+        path: '/',
+    });
+
+    sendSuccess(res, { message: 'Logged out successfully' });
+});
+
+module.exports = {
+    register,
+    login,
+    refreshAccessToken,
+    logoutUser,
+    registerValidation,
+    loginValidation,
+};

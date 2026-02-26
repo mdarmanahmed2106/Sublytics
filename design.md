@@ -1,275 +1,358 @@
-# Trackizer – UI/UX Design Document
-
-## 1. Project Overview
-**Trackizer** is a subscription tracking and expense management application designed to help users monitor recurring payments (Netflix, Spotify, Amazon Prime, etc.), track spending habits, and manage monthly budgets efficiently.
-
-The app focuses on providing a clean interface, quick insights, and an easy subscription management experience.
+# UI/UX Design Document  
+## Subscription Intelligence Tracker  
+### Version 1.0
 
 ---
 
-## 2. Problem Statement
-Users often forget recurring payments and subscriptions, leading to:
-- unwanted auto-renewals
-- overspending
-- lack of financial awareness
-- poor budgeting habits
+# 1. Design Overview
 
-Trackizer solves this by giving users a clear dashboard of active subscriptions and monthly expenses.
+The Subscription Intelligence Tracker is a modern SaaS-style web application designed to help users manage, analyze, and optimize recurring subscriptions.
 
----
+The UI follows a **clean, dark-theme fintech aesthetic** with strong data hierarchy, clear visual feedback, and analytics-focused layout.
 
-## 3. Objectives
-- Provide a simple subscription tracking system
-- Display monthly spending summary clearly
-- Help users avoid missing renewal dates
-- Offer quick subscription management (add/edit/delete)
-- Improve budgeting and awareness
+Design Goals:
+- Provide clear financial visibility
+- Reduce cognitive overload
+- Enable quick actions (Add, Edit, Delete)
+- Present analytics in an intuitive way
+- Maintain a professional SaaS dashboard feel
 
 ---
 
-## 4. Target Audience
+# 2. Design Principles
 
-### Primary Users
-- Students
-- Working professionals
-- Freelancers
-- People with multiple OTT/music/cloud subscriptions
+1. **Clarity Over Decoration**  
+   Financial data must be readable and prioritized.
 
-### User Needs
-- Know what subscriptions are active
-- Track how much they spend monthly
-- Get renewal reminders
-- Manage subscriptions quickly
+2. **Data First Layout**  
+   KPIs and analytics are the main focus.
 
----
+3. **Consistency**  
+   Uniform spacing, border radius, and color usage.
 
-## 5. Design Goals
-- Minimal and modern UI
-- Clear typography and readable layout
-- Financial data visibility (graphs/cards)
-- Easy navigation with bottom tab bar
-- Quick actions like add subscription
+4. **Action-Oriented UX**  
+   Users should be able to:
+   - Add subscription within 2 clicks
+   - Find a subscription within 3 seconds
+   - Understand total spend instantly
+
+5. **Minimal Cognitive Load**  
+   No cluttered layouts. Clear section separation.
 
 ---
 
-## 6. User Flow
+# 3. Visual Style
 
-### Flow 1: New User Journey
-1. Open App  
-2. Splash Screen  
-3. Onboarding Screens  
-4. Login/Signup  
-5. Dashboard Home Screen  
+## 3.1 Theme
 
-### Flow 2: Subscription Management
-1. Home Screen  
-2. Tap “Add Subscription”  
-3. Fill details (name, amount, billing cycle)  
-4. Save subscription  
-5. Subscription appears in list  
+Primary Theme: Dark Fintech Dashboard  
+Style: Modern SaaS (Stripe-like minimal UI)
 
-### Flow 3: Tracking Spending
-1. Home Screen  
-2. View Monthly Spend summary  
-3. View category-wise breakdown  
-4. Check upcoming renewals  
+## 3.2 Color System
 
----
+| Usage | Color |
+|-------|-------|
+| Primary Background | #0B0F19 |
+| Card Background | #121826 |
+| Primary Accent | #7C3AED |
+| Accent Gradient | #7C3AED → #A78BFA |
+| Secondary Accent | #3B82F6 |
+| Success | #10B981 |
+| Danger | #EF4444 |
+| Text Primary | #FFFFFF |
+| Text Secondary | #9CA3AF |
+| Border | #1F2937 |
 
-## 7. Key Screens & Purpose
-
-### 7.1 Splash Screen
-- Branding + logo
-- Smooth app entry experience
-
-### 7.2 Onboarding Screens
-- Explain app features in 2–3 slides
-- CTA: “Get Started”
-
-### 7.3 Login / Signup Screen
-- User authentication
-- Input fields for email and password
-
-### 7.4 Home / Dashboard Screen
-Main screen showing:
-- total monthly spending
-- active subscriptions list
-- upcoming renewal section
-- quick add button
-
-### 7.5 Subscription Detail Screen
-Shows:
-- subscription name
-- amount
-- renewal date
-- billing frequency
-- edit/delete actions
-
-### 7.6 Add Subscription Screen
-Form with:
-- subscription title
-- monthly amount
-- payment method
-- billing cycle (weekly/monthly/yearly)
-- reminder toggle
-
-### 7.7 Analytics Screen
-Visual spending representation:
-- graphs or pie charts
-- monthly comparison
-- category-based spending
-
-### 7.8 Settings/Profile Screen
-Includes:
-- account settings
-- notification preferences
-- theme mode (dark/light)
-- logout
+Color Usage Rules:
+- Purple = Primary actions
+- Green = Positive growth / Active status
+- Red = Deletion / Error / Cancelled
+- Blue = Informational elements
 
 ---
 
-## 8. Navigation Structure
+# 4. Typography
 
-### Primary Navigation
-Bottom Tab Bar:
-- Home
-- Analytics
+Font Family: Inter / Poppins
+
+## Hierarchy
+
+| Element | Size | Weight |
+|----------|------|--------|
+| Page Title | 28px | Bold |
+| Section Title | 20px | Semi-bold |
+| KPI Value | 32–36px | Bold |
+| Card Title | 16px | Medium |
+| Body Text | 14–16px | Regular |
+| Caption | 12px | Regular |
+
+Typography Rules:
+- No more than 3 font weights used.
+- Large KPIs must stand out clearly.
+- Maintain proper line spacing (1.4–1.6).
+
+---
+
+# 5. Layout System
+
+## 5.1 Grid System
+
+- 12-column grid (Desktop)
+- 8-column grid (Tablet)
+- 4-column grid (Mobile)
+- 16px base spacing unit
+
+## 5.2 Spacing Rules
+
+- Section spacing: 32px
+- Card padding: 20px
+- Gap between cards: 16px
+- Border radius: 16px
+
+---
+
+# 6. Navigation Structure
+
+## 6.1 Desktop Layout
+
+- Left Sidebar Navigation
+- Top Navbar (optional for user profile)
+
+### Sidebar Items:
+- Dashboard
 - Subscriptions
-- Profile/Settings
+- Analytics
+- Activity
+- Settings
 
-### Secondary Navigation
-- Back button for details pages
-- Floating action button for adding subscription
+Active state:
+- Purple highlight
+- Subtle glow effect
 
----
+## 6.2 Mobile Layout
 
-## 9. Design System
-
-### 9.1 Typography
-- **Primary Font:** Sans-serif (modern, clean)
-- Font hierarchy:
-  - Headings: Bold / Semi-bold
-  - Body text: Regular
-  - Small labels: Medium
-
-#### Suggested Sizes
-- H1: 24–28px
-- H2: 18–20px
-- Body: 14–16px
-- Captions: 12px
+- Bottom navigation bar
+- Collapsible charts
+- Single column layout
 
 ---
 
-### 9.2 Color Palette
-Trackizer uses a dark modern finance-theme UI.
-
-#### Primary Colors
-- Dark Background: #0B0B0F (approx)
-- Card Background: #14141D (approx)
-- Primary Accent: Purple/Violet tone
-- Secondary Accent: Blue/Pink gradient elements
-
-#### Utility Colors
-- Green: for savings/positive balance
-- Red: for expense alerts / overdue
-- White: main text
-- Grey: secondary text
+# 7. Page-Level Design
 
 ---
 
-### 9.3 Buttons & Components
+## 7.1 Dashboard Page
 
-#### Primary Button
+Purpose:
+Provide instant financial overview.
+
+### Sections:
+
+#### A. KPI Cards (Top Section)
+
+4 Cards:
+- Total Monthly Spend
+- Total Annual Spend
+- Active Subscriptions
+- Average Cost per Subscription
+
+Each card includes:
+- Icon
+- Large numeric value
+- Small description
+- Percentage indicator
+
+#### B. Analytics Section
+
+Left:
+- Pie Chart (Spend by Category)
+
+Right:
+- Bar Chart (Top Subscriptions)
+
+Bottom:
+- Line Chart (6 Month Spending Trend)
+
+#### C. Insight Cards
+
+Examples:
+- “Spending increased 12% this month”
+- “You have 2 paused subscriptions”
+
+---
+
+## 7.2 Subscriptions Page
+
+Purpose:
+Manage all subscriptions efficiently.
+
+### Top Controls:
+- Search bar
+- Filter dropdowns:
+  - Category
+  - Status
+  - Billing Cycle
+- Sort dropdown
+- Add Subscription button
+
+### Subscription Cards
+
+Each card displays:
+- Name
+- Category Tag
+- Cost
+- Billing Cycle
+- Status Badge
+- Edit/Delete Icons
+
+Hover Effects:
+- Card elevation
+- Border glow
+
+---
+
+## 7.3 Add / Edit Subscription Page
+
+Centered form layout.
+
+Fields:
+- Name
+- Description
+- Category
+- Cost
+- Billing Cycle
+- Start Date
+- Status
+
+Buttons:
+- Save (Primary)
+- Cancel (Secondary)
+
+Validation:
+- Inline error messages
+- Red border on invalid input
+- Clear error description
+
+---
+
+## 7.4 Activity Page
+
+Layout: Vertical timeline
+
+Each entry:
+- Action icon
+- Description
+- Timestamp
+
+Features:
+- Filter by action
+- Pagination
+- Sort by date
+
+---
+
+# 8. Components Design System
+
+## 8.1 Buttons
+
+Primary:
+- Purple background
+- White text
 - Rounded corners
-- Filled violet/purple
-- Used for CTA (Add, Save, Get Started)
+- Hover glow
 
-#### Secondary Button
-- Outline / subtle background
-- Used for cancel, back, edit options
+Secondary:
+- Transparent background
+- Border outline
 
-#### Cards
-Used widely for:
-- subscription tiles
-- monthly spending summary
-- analytics blocks
-
-Card style:
-- Rounded corners (12–20px)
-- Shadow/blur effect
-- Dark fill with subtle border
+Danger:
+- Red background
 
 ---
 
-### 9.4 Input Fields
-- Rounded textfields
-- Label above field
-- Placeholder inside
-- Error state highlighted in red
+## 8.2 Cards
+
+- Dark background
+- Soft shadow
+- 16px radius
+- Subtle hover animation
 
 ---
 
-### 9.5 Icons
-Icons used for:
-- categories (music, OTT, cloud)
-- navigation tabs
-- edit/delete actions
+## 8.3 Badges
 
-Style:
-- minimal line icons
-- consistent stroke width
+Active → Green  
+Paused → Yellow  
+Cancelled → Red  
+
+Small rounded pill style.
 
 ---
 
-## 10. Layout & Grid Rules
-- Mobile-first design
-- Padding: 16px standard
-- Card gap: 12–16px
-- Rounded corners: 16px
-- Consistent spacing between elements
+## 8.4 Inputs
+
+- Dark background
+- Border color: #1F2937
+- Focus border: Purple
+- Error border: Red
 
 ---
 
-## 11. Visual Style Guidelines
-- Dark theme premium look
-- Neon gradient highlights for key stats
-- Smooth minimal animations
-- Clean hierarchy (cards + bold headings)
+# 9. Interaction Design
+
+Animations:
+- Smooth fade page transitions
+- Hover lift on cards
+- Animated chart rendering
+- Button hover glow
+
+Microinteractions:
+- Success toast after save
+- Confirmation modal for delete
+- Loading skeleton while fetching data
 
 ---
 
-## 12. Accessibility Considerations
-- Proper contrast ratio between text and background
-- Clear icons + labels for navigation
-- Large enough touch targets (min 44px)
-- Error messages should be readable
+# 10. Accessibility
+
+- WCAG AA contrast compliance
+- Keyboard navigable forms
+- Focus states clearly visible
+- Large click targets (min 44px height)
 
 ---
 
-## 13. Responsive Design Guidelines
+# 11. Responsive Behavior
 
-### Mobile (Primary)
-- single column layout
-- bottom tab navigation
+Desktop:
+- Sidebar visible
+- Multi-column charts
 
-### Tablet/Desktop (Optional)
-- sidebar navigation
-- dashboard in grid format (2–3 columns)
+Tablet:
+- Collapsible sidebar
+- Two-column layout
 
----
-
-## 14. Design Deliverables
-- High-fidelity Figma design screens
-- UI component library
-- Design system (colors, typography, buttons)
-- Prototypes with transitions
-- Export-ready assets/icons
+Mobile:
+- Bottom nav
+- Stacked layout
+- Full-width cards
 
 ---
 
-## 15. Future Improvements
-- Subscription renewal reminders via push notifications
-- Payment integration (UPI/Card tracking)
-- Auto-detection of subscriptions from SMS/email
-- AI spending recommendations
-- Export reports in PDF/Excel
+# 12. Future Design Enhancements
+
+- Light mode toggle
+- Custom theme options
+- Animated financial insights
+- Gamified spending goals
+- Advanced financial forecasting charts
+
+---
+
+# 13. Design Deliverables
+
+- High-fidelity UI screens (Figma)
+- Component library
+- Design tokens (color, spacing, typography)
+- Interactive prototype
+- Responsive layouts

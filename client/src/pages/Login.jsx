@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/useAuth';
 import { loginUser } from '../api/api';
-import { CreditCard, Mail, Lock, ArrowRight } from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import {
+    CreditCard, Lock, Mail, AlertCircle, ArrowRight,
+    BarChart3, Shield, Zap,
+} from 'lucide-react';
 
 const Login = () => {
-    const [form, setForm] = useState({ email: '', password: '' });
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
@@ -14,94 +18,141 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        if (!email || !password) { setError('Please fill in all fields'); return; }
         setLoading(true);
         try {
-            const { data } = await loginUser(form);
+            const { data } = await loginUser({ email, password });
             login(data.data);
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.error?.message || 'Login failed');
-        } finally {
-            setLoading(false);
-        }
+            setError(err.response?.data?.error?.message || 'Invalid credentials');
+        } finally { setLoading(false); }
     };
 
+    const features = [
+        { icon: BarChart3, title: 'Smart Analytics', desc: 'Visualize spending patterns with interactive charts' },
+        { icon: Shield, title: 'Secure Tracking', desc: 'Your data is encrypted and protected' },
+        { icon: Zap, title: 'Instant Insights', desc: 'Get actionable recommendations to save money' },
+    ];
+
     return (
-        <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-primary)' }}>
-            {/* Background gradient blobs */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full opacity-15 blur-3xl"
-                    style={{ background: 'var(--accent-orange)' }} />
-                <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full opacity-10 blur-3xl"
-                    style={{ background: 'var(--accent-coral)' }} />
+        <div className="auth-page">
+            {/* Background Orbs */}
+            <div className="auth-orb auth-orb-1" />
+            <div className="auth-orb auth-orb-2" />
+            <div className="auth-orb auth-orb-3" />
+
+            {/* Left — Brand Panel (desktop only) */}
+            <div className="auth-brand-panel">
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                    {/* Logo */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 48 }}>
+                        <div
+                            className="anim-pulse-glow"
+                            style={{
+                                width: 48, height: 48, borderRadius: 'var(--radius-sm)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                background: '#14B8A6',
+                            }}
+                        >
+                            <BarChart3 size={24} color="#fff" strokeWidth={2.5} />
+                        </div>
+                        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, margin: 0, letterSpacing: '-0.02em', color: '#14B8A6' }}>
+                            Sublytics
+                        </h1>
+                    </div>
+
+                    {/* Headline */}
+                    <h1 style={{
+                        fontFamily: 'var(--font-display)', fontSize: 36, fontWeight: 700,
+                        lineHeight: 1.2, letterSpacing: '-0.03em', color: 'var(--text-primary)',
+                        marginBottom: 12,
+                    }}>
+                        Take control of your{' '}
+                        <span className="gradient-text-vivid">subscriptions</span>
+                    </h1>
+                    <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 40, maxWidth: 380 }}>
+                        Track, analyze, and optimize your recurring expenses. Never lose sight of where your money goes.
+                    </p>
+
+                    {/* Features */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        {features.map((f, i) => (
+                            <div key={i} className="auth-feature anim-fade-up" style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+                                <div className="auth-feature-icon">
+                                    <f.icon size={16} color="var(--accent-light)" />
+                                </div>
+                                <div className="auth-feature-text">
+                                    <h4>{f.title}</h4>
+                                    <p>{f.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
 
-            <div className="w-full max-w-md animate-fade-in-up relative z-10">
-                {/* Logo */}
-                <div className="flex flex-col items-center mb-8">
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 animate-pulse-glow"
-                        style={{ background: 'linear-gradient(135deg, var(--accent-orange), var(--accent-coral))' }}>
-                        <CreditCard size={28} color="white" />
+            {/* Right — Form Panel */}
+            <div className="auth-form-panel">
+                <div className="card-glass anim-scale" style={{ width: '100%', maxWidth: 420, padding: '44px 36px', position: 'relative', zIndex: 1 }}>
+                    {/* Logo (mobile only shows here) */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 8 }}>
+                        <div
+                            className="anim-pulse-glow"
+                            style={{
+                                width: 44, height: 44, borderRadius: 'var(--radius-sm)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                background: 'var(--accent-gradient-vivid)',
+                            }}
+                        >
+                            <CreditCard size={20} color="#fff" />
+                        </div>
                     </div>
-                    <h1 className="text-3xl font-bold gradient-text">SubsTracker</h1>
-                    <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                        Track · Analyze · Optimize
+                    <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, textAlign: 'center', color: 'var(--text-primary)', marginBottom: 4, letterSpacing: '-0.02em' }}>
+                        Welcome back
+                    </h1>
+                    <p style={{ fontSize: 14, color: 'var(--text-secondary)', textAlign: 'center', marginBottom: 32 }}>
+                        Sign in to your account
                     </p>
-                </div>
-
-                {/* Form Card */}
-                <div className="glass-card p-8">
-                    <h2 className="text-xl font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>Welcome back</h2>
 
                     {error && (
-                        <div className="mb-4 p-3 rounded-xl text-sm" style={{ background: 'rgba(239,68,68,0.1)', color: 'var(--red)' }}>
-                            {error}
+                        <div className="alert-error" style={{ marginBottom: 16 }}>
+                            <AlertCircle size={15} />
+                            <span>{error}</span>
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                         <div>
-                            <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--text-secondary)' }}>Email</label>
-                            <div className="relative">
-                                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
-                                <input type="email" required value={form.email}
-                                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                    placeholder="you@example.com"
-                                    className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
-                                    style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
-                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
-                                    onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
+                            <label className="label">Email</label>
+                            <div style={{ position: 'relative' }}>
+                                <Mail size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" style={{ paddingLeft: 40 }} />
                             </div>
                         </div>
 
                         <div>
-                            <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--text-secondary)' }}>Password</label>
-                            <div className="relative">
-                                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
-                                <input type="password" required value={form.password}
-                                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                    placeholder="Enter your password"
-                                    className="w-full pl-10 pr-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
-                                    style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-light)' }}
-                                    onFocus={(e) => e.target.style.borderColor = 'var(--accent-orange)'}
-                                    onBlur={(e) => e.target.style.borderColor = 'var(--border)'} />
+                            <label className="label">Password</label>
+                            <div style={{ position: 'relative' }}>
+                                <Lock size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                                <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" style={{ paddingLeft: 40 }} />
                             </div>
                         </div>
 
-                        <button type="submit" disabled={loading}
-                            className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer mt-2"
-                            style={{
-                                background: 'linear-gradient(135deg, var(--accent-orange), var(--accent-coral))',
-                                color: 'white', border: 'none', opacity: loading ? 0.7 : 1,
-                                boxShadow: '0 4px 15px rgba(255,107,53,0.25)',
-                            }}>
-                            {loading ? 'Signing in...' : <><span>Sign In</span><ArrowRight size={16} /></>}
+                        <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: 8, height: 46, opacity: loading ? .7 : 1 }} disabled={loading}>
+                            {loading ? (
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <span className="spinner-sm spinner" /> Signing in…
+                                </span>
+                            ) : (
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>Sign In <ArrowRight size={16} /></span>
+                            )}
                         </button>
                     </form>
 
-                    <p className="mt-6 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    <p style={{ fontSize: 13, color: 'var(--text-secondary)', textAlign: 'center', marginTop: 28 }}>
                         Don't have an account?{' '}
-                        <Link to="/register" className="font-medium" style={{ color: 'var(--accent-orange)' }}>Create one</Link>
+                        <Link to="/register" style={{ color: 'var(--accent-light)', fontWeight: 600, transition: 'color 0.15s' }}>Create one</Link>
                     </p>
                 </div>
             </div>

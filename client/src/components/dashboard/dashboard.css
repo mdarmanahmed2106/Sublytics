@@ -1,0 +1,24 @@
+/* ═══════════════════════════════════════════════════
+   CHECKBOX DASHBOARD – Scoped Design Tokens
+   These are isolated from the main app's global styles.
+   ═══════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+.cb-dashboard {
+    --cb-bg: #0B0F14;
+    --cb-card: #141A21;
+    --cb-card-hover: #1A2129;
+    --cb-green: #A3FF12;
+    --cb-orange: #FF9D1E;
+    --cb-muted: #9CA3AF;
+    --cb-text: #F3F4F6;
+    --cb-border: rgba(255, 255, 255, 0.05);
+    --cb-glass: rgba(255, 255, 255, 0.05);
+    --cb-glass-hover: rgba(255, 255, 255, 0.10);
+    --cb-glass-active: rgba(255, 255, 255, 0.15);
+
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--cb-bg);
+    color: var(--cb-text);
+    min-height: 100vh;
+}

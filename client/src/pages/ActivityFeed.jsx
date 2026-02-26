@@ -1,127 +1,166 @@
 import { useEffect, useState } from 'react';
 import { getActivityFeed } from '../api/api';
-import { Clock, Plus, Edit3, Trash2, ChevronDown } from 'lucide-react';
+import {
+    Activity, Plus, RefreshCw, Trash2, Clock, ChevronDown,
+} from 'lucide-react';
 
-const actionConfig = {
-    created: { icon: Plus, color: 'var(--green)', label: 'Created' },
-    updated: { icon: Edit3, color: 'var(--accent-blue)', label: 'Updated' },
-    deleted: { icon: Trash2, color: 'var(--red)', label: 'Deleted' },
+const ACTION_CONFIG = {
+    created: { color: 'var(--success)', icon: Plus, label: 'Created' },
+    updated: { color: 'var(--blue)', icon: RefreshCw, label: 'Updated' },
+    deleted: { color: 'var(--danger)', icon: Trash2, label: 'Deleted' },
 };
 
 const ActivityFeed = () => {
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState('');
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const [filter, setFilter] = useState('');
 
-    const fetchActivities = async (pageNum = 1, reset = false) => {
-        try {
-            const params = { page: pageNum, limit: 15 };
-            if (filter) params.action = filter;
-            const { data } = await getActivityFeed(params);
-            setActivities((prev) => reset ? data.data : [...prev, ...data.data]);
-            setHasMore(data.meta.page < data.meta.pages);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
+    const fetchActivities = (pageNum = 1, actionFilter = '') => {
+        setLoading(pageNum === 1);
+        const params = { page: pageNum, limit: 15 };
+        if (actionFilter) params.action = actionFilter;
+        getActivityFeed(params)
+            .then((res) => {
+                const payload = res.data?.data || res.data;
+                const list = payload?.logs || payload?.activities || [];
+                if (pageNum === 1) setActivities(list);
+                else setActivities((prev) => [...prev, ...list]);
+                const pagination = payload?.pagination;
+                setHasMore(pagination ? pagination.page < pagination.pages : list.length === 15);
+            })
+            .catch(console.error)
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
-        setLoading(true);
         setPage(1);
-        fetchActivities(1, true);
+        fetchActivities(1, filter);
     }, [filter]);
 
-    const loadMore = () => {
-        const nextPage = page + 1;
-        setPage(nextPage);
-        fetchActivities(nextPage);
+    const handleLoadMore = () => {
+        const next = page + 1;
+        setPage(next);
+        fetchActivities(next, filter);
     };
 
-    const formatTime = (d) => {
-        const date = new Date(d);
-        const now = new Date();
-        const diff = Math.floor((now - date) / 1000);
-        if (diff < 60) return 'Just now';
-        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-        if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-        return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
-    };
+    if (loading && activities.length === 0) return <FeedSkeleton />;
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Activity Feed</h1>
-                    <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Your subscription change history</p>
-                </div>
-
-                <select value={filter} onChange={(e) => setFilter(e.target.value)}
-                    className="px-3 py-2.5 rounded-xl text-sm cursor-pointer"
-                    style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
-                    <option value="">All Actions</option>
-                    <option value="created">Created</option>
-                    <option value="updated">Updated</option>
-                    <option value="deleted">Deleted</option>
-                </select>
+        <div>
+            {/* Header */}
+            <div className="anim-fade-up" style={{ marginBottom: 24 }}>
+                <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Activity size={24} className="gradient-text-vivid" style={{ WebkitTextFillColor: 'unset', color: 'var(--accent-light)' }} />
+                    Activity Feed
+                </h1>
+                <p className="page-subtitle">Track all changes to your subscriptions.</p>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center py-12">
-                    <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--accent-orange)', borderTopColor: 'transparent' }} />
+            {/* ── Filter Pills ── */}
+            <div className="anim-fade-up" style={{ marginBottom: 24, animationDelay: '60ms' }}>
+                <div className="pill-group">
+                    {['', 'created', 'updated', 'deleted'].map((f) => (
+                        <button key={f} className={`pill-option ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>
+                            {f ? ACTION_CONFIG[f]?.label : 'All'}
+                        </button>
+                    ))}
                 </div>
-            ) : activities.length === 0 ? (
-                <div className="glass-card p-12 text-center">
-                    <Clock size={48} className="mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
-                    <p className="text-lg font-medium" style={{ color: 'var(--text-secondary)' }}>No activity yet</p>
-                    <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
-                        Activity will appear here as you manage subscriptions
-                    </p>
+            </div>
+
+            {/* ── Timeline ── */}
+            {activities.length === 0 ? (
+                <div className="empty-state anim-scale">
+                    <div className="empty-state-icon"><Activity size={28} color="var(--accent-light)" /></div>
+                    <p className="empty-state-title">No activity yet</p>
+                    <p className="empty-state-text">Your subscription changes will appear here.</p>
                 </div>
             ) : (
-                <div className="space-y-3">
+                <div style={{ position: 'relative' }}>
                     {activities.map((act, i) => {
-                        const config = actionConfig[act.action] || actionConfig.created;
+                        const config = ACTION_CONFIG[act.action] || ACTION_CONFIG.created;
                         const Icon = config.icon;
-                        const subName = act.entityId?.name || 'Unknown subscription';
                         return (
-                            <div key={i} className="glass-card p-4 flex items-center gap-4 animate-fade-in-up"
-                                style={{ animationDelay: `${i * 30}ms` }}>
-                                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                                    style={{ background: `${config.color}15` }}>
-                                    <Icon size={18} style={{ color: config.color }} />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                                        {config.label} <span className="font-semibold">{subName}</span>
+                            <div
+                                key={act._id || i}
+                                className="anim-fade-up"
+                                style={{
+                                    display: 'flex', gap: 14, position: 'relative',
+                                    paddingBottom: 16, paddingLeft: 4,
+                                    animationDelay: `${80 + i * 30}ms`,
+                                }}
+                            >
+                                {/* Connector line */}
+                                {i < activities.length - 1 && <div className="timeline-line" />}
+
+                                {/* Dot */}
+                                <div
+                                    className="timeline-dot"
+                                    style={{
+                                        background: config.color,
+                                        boxShadow: `0 0 10px ${config.color}`,
+                                        width: 14, height: 14,
+                                    }}
+                                />
+
+                                {/* Card */}
+                                <div
+                                    style={{
+                                        flex: 1,
+                                        background: 'var(--bg-card)',
+                                        border: '1px solid var(--border)',
+                                        borderLeft: `3px solid ${config.color}`,
+                                        borderRadius: 'var(--radius-sm)',
+                                        padding: '14px 18px',
+                                        transition: 'border-color 0.2s, background 0.2s',
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                                        <Icon size={14} style={{ color: config.color }} />
+                                        <span style={{ fontSize: 12, fontWeight: 600, color: config.color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                            {config.label}
+                                        </span>
+                                    </div>
+                                    <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 4 }}>
+                                        {act.subscriptionName || 'Subscription'}
                                     </p>
-                                    {act.changes && act.action === 'updated' && Object.keys(act.changes).length > 0 && (
-                                        <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
-                                            Changed: {Object.keys(act.changes).join(', ')}
-                                        </p>
-                                    )}
+                                    <p style={{ fontSize: 11, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                        <Clock size={10} />
+                                        {new Date(act.timestamp || act.createdAt).toLocaleString()}
+                                    </p>
                                 </div>
-                                <p className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>
-                                    {formatTime(act.timestamp)}
-                                </p>
                             </div>
                         );
                     })}
 
+                    {/* Load More */}
                     {hasMore && (
-                        <button onClick={loadMore}
-                            className="w-full py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 cursor-pointer"
-                            style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
-                            <ChevronDown size={16} /> Load More
-                        </button>
+                        <div style={{ textAlign: 'center', marginTop: 16 }}>
+                            <button className="btn btn-secondary" onClick={handleLoadMore} style={{ gap: 6 }}>
+                                Load More <ChevronDown size={14} />
+                            </button>
+                        </div>
                     )}
                 </div>
             )}
         </div>
     );
 };
+
+/* Skeleton */
+const FeedSkeleton = () => (
+    <div>
+        <div className="skeleton" style={{ width: 200, height: 36, marginBottom: 8 }} />
+        <div className="skeleton" style={{ width: 260, height: 18, marginBottom: 24 }} />
+        <div className="skeleton" style={{ width: 240, height: 36, marginBottom: 24 }} />
+        {[...Array(5)].map((_, i) => (
+            <div key={i} style={{ display: 'flex', gap: 14, marginBottom: 16 }}>
+                <div className="skeleton" style={{ width: 14, height: 14, borderRadius: '50%', flexShrink: 0 }} />
+                <div className="skeleton" style={{ flex: 1, height: 80 }} />
+            </div>
+        ))}
+    </div>
+);
 
 export default ActivityFeed;

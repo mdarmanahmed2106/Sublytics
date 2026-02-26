@@ -7,6 +7,7 @@ const {
     createSubscription,
     updateSubscription,
     deleteSubscription,
+    markSubscriptionUsed,
     subscriptionValidation,
 } = require('../controllers/subscriptionController');
 
@@ -20,5 +21,7 @@ router.route('/:id')
     .get(getSubscription)
     .put(updateSubscription)
     .delete(deleteSubscription);
+
+router.patch('/:id/mark-used', markSubscriptionUsed);
 
 module.exports = router;

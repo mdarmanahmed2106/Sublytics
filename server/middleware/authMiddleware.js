@@ -1,38 +1,31 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const AppError = require('../utils/AppError');
+const asyncHandler = require('../utils/asyncHandler');
 
-const protect = async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
     let token;
 
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
-        try {
-            token = req.headers.authorization.split(' ')[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = await User.findById(decoded.id).select('-password');
-            if (!req.user) {
-                return res.status(401).json({
-                    success: false,
-                    error: { code: 'USER_NOT_FOUND', message: 'User no longer exists' },
-                });
-            }
-            next();
-        } catch (error) {
-            return res.status(401).json({
-                success: false,
-                error: { code: 'INVALID_TOKEN', message: 'Token is invalid or expired' },
-            });
-        }
+    // Check Authorization header first, then cookie fallback
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies && req.cookies.refreshToken) {
+        // For backward compat — but prefer bearer token
+        token = null; // Don't use refresh as access
     }
 
     if (!token) {
-        return res.status(401).json({
-            success: false,
-            error: { code: 'NO_TOKEN', message: 'Not authorized, no token provided' },
-        });
+        throw new AppError('Not authorized, no token provided', 401, 'NO_TOKEN');
     }
-};
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+        throw new AppError('User no longer exists', 401, 'USER_NOT_FOUND');
+    }
+
+    next();
+});
 
 module.exports = { protect };

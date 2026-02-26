@@ -1,40 +1,46 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AuthContext } from './authContext';
-
-const readStoredAuth = () => {
-  try {
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-    if (!storedUser || !storedToken) return { user: null, token: null };
-    return { user: JSON.parse(storedUser), token: storedToken };
-  } catch {
-    return { user: null, token: null };
-  }
-};
+import { refreshSession, setAccessToken, clearAccessToken, logoutUser as apiLogout } from '../api/api';
 
 export const AuthProvider = ({ children }) => {
-  const initial = readStoredAuth();
-  const [user, setUser] = useState(initial.user);
-  const [token, setToken] = useState(initial.token);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // true until we check the refresh cookie
+
+  // On mount, try to restore session from the HTTP-only refresh cookie
+  useEffect(() => {
+    const restore = async () => {
+      try {
+        const { data } = await refreshSession();
+        const userData = data.data;
+        setAccessToken(userData.accessToken);
+        setUser({ _id: userData._id, name: userData.name, email: userData.email });
+      } catch {
+        // No valid refresh cookie — user is not logged in
+        clearAccessToken();
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    restore();
+  }, []);
 
   const login = (userData) => {
-    setUser(userData);
-    setToken(userData.token);
-    localStorage.setItem('token', userData.token);
-    localStorage.setItem('user', JSON.stringify(userData));
+    setAccessToken(userData.accessToken);
+    setUser({ _id: userData._id, name: userData.name, email: userData.email });
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await apiLogout();
+    } catch { /* ignore */ }
+    clearAccessToken();
     setUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
 };
-

@@ -1,141 +1,132 @@
-import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
-import { Bell, ChevronRight, LogOut, Moon, Sun, UserCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import {
+  User, Mail, Moon, Sun, LogOut, Shield, Bell, ChevronRight,
+  CreditCard,
+} from 'lucide-react';
+import { useState } from 'react';
 
 const Profile = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
-  const initialTheme = useMemo(() => {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'light' || saved === 'dark') return saved;
-    return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
-  }, []);
-
-  const [theme, setTheme] = useState(initialTheme);
-  const [renewalReminders, setRenewalReminders] = useState(true);
-
-  const setAndPersistTheme = (next) => {
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
-    document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
+    document.documentElement.dataset.theme = next;
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  const avatarLetter = (user?.name || user?.email || '?').trim().charAt(0).toUpperCase();
+  const handleLogout = () => { logout(); navigate('/login'); };
+  const initial = (user?.name || user?.email || '?').charAt(0).toUpperCase();
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Profile</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Account & preferences</p>
-        </div>
-      </div>
-
-      <div className="glass-card p-6">
-        <div className="flex items-center gap-4">
+    <div style={{ maxWidth: 560, margin: '0 auto' }}>
+      {/* ── Profile Card ── */}
+      <div className="detail-hero anim-scale" style={{ textAlign: 'center', marginBottom: 28 }}>
+        {/* Avatar */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-bold"
-            style={{ background: 'linear-gradient(135deg, var(--accent-orange), var(--accent-coral))', color: 'white' }}
-          >
-            {avatarLetter}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-lg font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
-              {user?.name || 'Your account'}
-            </p>
-            <p className="text-sm truncate" style={{ color: 'var(--text-muted)' }}>{user?.email}</p>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}>
-            <UserCircle2 size={16} style={{ color: 'var(--text-muted)' }} />
-            <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Logged in</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="glass-card p-6 space-y-4">
-        <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Preferences</h2>
-
-        <button
-          type="button"
-          onClick={() => setAndPersistTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="w-full flex items-center justify-between p-4 rounded-xl cursor-pointer"
-          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}
-        >
-          <div className="flex items-center gap-3">
-            {theme === 'dark' ? (
-              <Moon size={18} style={{ color: 'var(--accent-orange)' }} />
-            ) : (
-              <Sun size={18} style={{ color: 'var(--yellow)' }} />
-            )}
-            <div className="text-left">
-              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Theme</p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                {theme === 'dark' ? 'Dark' : 'Light'}
-              </p>
-            </div>
-          </div>
-          <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
-        </button>
-
-        <div
-          className="w-full flex items-center justify-between p-4 rounded-xl"
-          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}
-        >
-          <div className="flex items-center gap-3">
-            <Bell size={18} style={{ color: 'var(--accent-blue)' }} />
-            <div>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Renewal reminders</p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>In-app toggle (push coming later)</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setRenewalReminders((v) => !v)}
-            className="px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer"
             style={{
-              background: renewalReminders ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.04)',
-              color: renewalReminders ? 'var(--green)' : 'var(--text-secondary)',
-              border: `1px solid ${renewalReminders ? 'rgba(16,185,129,0.25)' : 'var(--border)'}`,
+              width: 80, height: 80, borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'var(--accent-gradient-vivid)',
+              color: '#fff', fontSize: 32, fontWeight: 700,
+              fontFamily: 'var(--font-display)',
+              boxShadow: '0 0 0 4px rgba(124, 58, 237, 0.2), 0 8px 32px rgba(124, 58, 237, 0.2)',
             }}
           >
-            {renewalReminders ? 'On' : 'Off'}
-          </button>
+            {initial}
+          </div>
+        </div>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: 2 }}>
+          {user?.name}
+        </h1>
+        <p style={{ fontSize: 14, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <Mail size={14} /> {user?.email}
+        </p>
+      </div>
+
+      {/* ── Settings ── */}
+      <div className="anim-fade-up" style={{ animationDelay: '100ms' }}>
+        <h3 className="section-title" style={{ marginBottom: 14, fontSize: 16 }}>Preferences</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 28 }}>
+          {/* Theme toggle */}
+          <div className="settings-row" onClick={toggleTheme}>
+            <div className="icon-box-sm" style={{ background: 'var(--accent-subtle)', color: 'var(--accent-light)' }}>
+              {theme === 'dark' ? <Moon size={16} /> : <Sun size={16} />}
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>Appearance</p>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{theme === 'dark' ? 'Dark mode' : 'Light mode'}</p>
+            </div>
+            <div
+              style={{
+                width: 42, height: 24, borderRadius: 12,
+                background: theme === 'dark' ? 'var(--accent)' : 'var(--border)',
+                padding: 3, cursor: 'pointer', transition: 'background 0.25s',
+                display: 'flex', alignItems: 'center',
+              }}
+            >
+              <div
+                style={{
+                  width: 18, height: 18, borderRadius: '50%',
+                  background: '#fff',
+                  transform: theme === 'dark' ? 'translateX(18px)' : 'translateX(0)',
+                  transition: 'transform 0.25s var(--ease-bounce)',
+                  boxShadow: '0 1px 3px rgba(0,0,0,.3)',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Notifications */}
+          <div className="settings-row">
+            <div className="icon-box-sm" style={{ background: 'rgba(59,130,246,.1)', color: 'var(--blue)' }}>
+              <Bell size={16} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>Notifications</p>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Manage notification preferences</p>
+            </div>
+            <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
+          </div>
+
+          {/* Security */}
+          <div className="settings-row">
+            <div className="icon-box-sm" style={{ background: 'rgba(16,185,129,.1)', color: 'var(--success)' }}>
+              <Shield size={16} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>Security</p>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Password & account security</p>
+            </div>
+            <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
+          </div>
         </div>
       </div>
 
-      <div className="glass-card p-6 space-y-3">
-        <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Quick links</h2>
-
-        <Link
-          to="/activity"
-          className="w-full flex items-center justify-between p-4 rounded-xl"
-          style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)' }}
+      {/* ── Danger Zone ── */}
+      <div className="anim-fade-up" style={{ animationDelay: '200ms' }}>
+        <h3 className="section-title" style={{ marginBottom: 14, fontSize: 16, color: 'var(--danger)' }}>Danger Zone</h3>
+        <div
+          className="settings-row"
+          onClick={handleLogout}
+          style={{ borderColor: 'rgba(239,68,68,.15)' }}
         >
-          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Activity feed</span>
-          <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
-        </Link>
+          <div className="icon-box-sm" style={{ background: 'var(--danger-glow)', color: 'var(--danger)' }}>
+            <LogOut size={16} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--danger)' }}>Sign Out</p>
+            <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Log out of your account</p>
+          </div>
+          <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
+        </div>
       </div>
-
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold cursor-pointer"
-        style={{ background: 'rgba(239,68,68,0.12)', color: 'var(--red)', border: '1px solid rgba(239,68,68,0.25)' }}
-      >
-        <LogOut size={16} />
-        Logout
-      </button>
     </div>
   );
 };
 
 export default Profile;
-

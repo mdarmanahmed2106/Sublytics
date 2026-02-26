@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Password is required'],
             minlength: 6,
         },
+        monthlyIncome: {
+            type: Number,
+            default: null,
+            min: 0,
+        },
     },
     { timestamps: true }
 );
