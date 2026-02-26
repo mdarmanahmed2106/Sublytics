@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../api/api';
 import { useAuth } from '../context/useAuth';
 import {
-    CreditCard, User, Lock, Mail, AlertCircle, ArrowRight,
+    CreditCard, BarChart3, User, Lock, Mail, AlertCircle, ArrowRight,
     TrendingUp, PieChart, Bell,
 } from 'lucide-react';
 
