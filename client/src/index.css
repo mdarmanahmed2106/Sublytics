@@ -799,6 +799,222 @@ input[type="date"].input::-webkit-calendar-picker-indicator {
   }
 }
 
+/* ═══════════════════════════════════════════════════
+   PREMIUM AUTH LAYOUT (SPLIT SCREEN)
+   ═══════════════════════════════════════════════════ */
+
+/* Full viewport layout */
+.auth-split-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* Left side — immersive brand panel */
+.auth-split-brand {
+  display: none;
+  /* hidden on mobile */
+  position: relative;
+  flex: 1;
+  background: #000;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+@media (min-width: 1024px) {
+  .auth-split-brand {
+    display: flex;
+  }
+}
+
+/* Glowing dot grid background */
+.brand-bg-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* Dynamic glow bursts */
+.brand-glow-1 {
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: 1;
+  animation: float 15s ease-in-out infinite reverse;
+}
+
+.brand-glow-2 {
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  z-index: 1;
+  animation: float 20s ease-in-out infinite;
+}
+
+/* Floating feature cards in brand panel */
+.brand-feature-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.brand-feature-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Right side — form container */
+.auth-split-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 440px;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODERN FLOATING LABEL INPUTS
+   ═══════════════════════════════════════════════════ */
+.input-floating-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.input-floating {
+  width: 100%;
+  padding: 24px 16px 8px 16px;
+  /* Fat padding for label */
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-floating:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--bg-elevated);
+}
+
+.input-floating:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  background: var(--bg-elevated);
+}
+
+.input-floating-label {
+  position: absolute;
+  left: 16px;
+  top: 18px;
+  /* Centered visually before focus */
+  font-size: 15px;
+  color: var(--text-muted);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  /* Let clicks pass through to input */
+}
+
+/* Float the label when focused or when it has a value (requires JS/React state or :not(:placeholder-shown) trick) */
+.input-floating:focus~.input-floating-label,
+.input-floating:not(:placeholder-shown)~.input-floating-label,
+.input-floating.has-value~.input-floating-label {
+  top: 8px;
+  font-size: 11px;
+  color: var(--accent-light);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════
+   SOCIAL AUTH BUTTONS
+   ═══════════════════════════════════════════════════ */
+.btn-social {
+  width: 100%;
+  height: 48px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-social:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.auth-divider:not(:empty)::before {
+  margin-right: 16px;
+}
+
+.auth-divider:not(:empty)::after {
+  margin-left: 16px;
+}
+
+
 @keyframes gradientShift {
   0% {
     background-position: 0% 50%;
